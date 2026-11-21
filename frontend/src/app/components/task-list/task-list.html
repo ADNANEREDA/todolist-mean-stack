@@ -1,0 +1,50 @@
+<div class="container mt-4" style="max-width: 800px">
+  <h2>Gestion des tâches</h2>
+
+  <!-- Formulaire d'ajout -->
+  <form [formGroup]="form" (ngSubmit)="addTask()" class="mb-3">
+    <input class="form-control mb-2" placeholder="Titre de la tâche"
+           formControlName="title" />
+    <textarea class="form-control mb-2" placeholder="Description de la tâche"
+              formControlName="description"></textarea>
+    <button class="btn btn-primary btn-sm" type="submit" [disabled]="form.invalid">
+      Ajouter une tâche
+    </button>
+  </form>
+
+  <!-- Liste des tâches -->
+  <ul class="list-group">
+    @for (task of tasks; track task._id) {
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+
+        @if (editingId === task._id) {
+          <!-- Mode modification -->
+          <form [formGroup]="editForm" class="flex-grow-1 me-3">
+            <input class="form-control mb-1" formControlName="title" />
+            <input class="form-control" formControlName="description" />
+          </form>
+          <div>
+            <button class="btn btn-success btn-sm me-1"
+                    (click)="saveEdit(task)" [disabled]="editForm.invalid">Enregistrer</button>
+            <button class="btn btn-secondary btn-sm" (click)="cancelEdit()">Annuler</button>
+          </div>
+        } @else {
+          <!-- Mode affichage -->
+          <div>
+            <div [style.text-decoration]="task.completed ? 'line-through' : 'none'">
+              <strong>{{ task.title }}</strong>
+            </div>
+            <small>{{ task.description }}</small>
+          </div>
+          <div>
+            <button class="btn btn-success btn-sm me-1" (click)="toggleCompleted(task)">
+              {{ task.completed ? 'Reprendre' : 'Terminer' }}
+            </button>
+            <button class="btn btn-warning btn-sm me-1" (click)="startEdit(task)">Modifier</button>
+            <button class="btn btn-danger btn-sm" (click)="deleteTask(task)">Supprimer</button>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</div>
